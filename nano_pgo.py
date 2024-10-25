@@ -601,6 +601,7 @@ class PoseGraphOptimizer:
 
         self.visualize_using_open3d = visualize_using_open3d
 
+    # Modeling and Solving methods
     @timeit
     def read_g2o_file(self, file_path):
         """
@@ -740,6 +741,8 @@ class PoseGraphOptimizer:
 
         return poses, edges
 
+    # Studiare bene qual è l'utilità di utilizzare una specifica loss su uno specifico residual. Dunque capire bene anche 
+    # se può avere senso applicare diverse loss a diversi residual (e.g. loss associata a sensore)
     def cauchy_weight(self, s):
         """
         Computes the Cauchy robust kernel weight for a given residual squared norm.
@@ -755,6 +758,7 @@ class PoseGraphOptimizer:
         epsilon = 1e-5
         return self.cauchy_c / (np.sqrt(self.cauchy_c**2 + s) + epsilon)
 
+    # Studiare bene a che cosa serve la rotation initialization e se ha senso applicarla anche per state estimation
     def relax_rotation(self):
         """
         Performs rotation initialization for the pose graph to improve the initial estimates of the rotations.
@@ -1317,6 +1321,7 @@ class PoseGraphOptimizer:
 
         return H, b, total_error
 
+    # Studiare bene Levenberg-Marquardt e Cholesky factorization
     @timeit
     def solve_sparse_system(self, H, b, e):
         """
@@ -1496,6 +1501,10 @@ class PoseGraphOptimizer:
 
         return termination_flag
 
+    # Capire bene qual è la differenza tra "optimize" e "solve_sparse_system" (forse solo che optimize chiama varie volte
+    # solve?) 
+    # Qual è il ruolo di Gauss-Newton in tutto questo?
+    # Con "robust kernels" si intendono le loss?
     @timeit
     def optimize(self):
         """
